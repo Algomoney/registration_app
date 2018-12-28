@@ -14,17 +14,8 @@ class App extends StatelessWidget {
             title: Text('Registration App'),
           ),
           body: RegistrationScreen(),
-          floatingActionButton: submitButton(),
         ),
       ),
-    );
-  }
-
-  Widget submitButton() {
-    return FloatingActionButton(
-      child: Icon(Icons.save),
-      tooltip: 'Save',
-      onPressed: () => print('Save button pressed'),
     );
   }
 }

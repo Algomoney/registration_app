@@ -38,6 +38,10 @@ class RegistrationScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 20.0),
                   child: ageAndGenderDisclaimer(),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: submitButton(),
+                ),
               ],
             ),
           ),
@@ -135,9 +139,12 @@ class RegistrationScreen extends StatelessWidget {
   }
 
   Widget submitButton() {
-    return FloatingActionButton(
-      child: Icon(Icons.save),
-      tooltip: 'Save',
+    return RaisedButton(
+      child: Text(
+        'Save',
+        style: TextStyle(color: Colors.white, fontSize: 20.0),
+      ),
+      color: Colors.blue,
       onPressed: () => print('Save button pressed'),
     );
   }
