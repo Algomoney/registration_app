@@ -9,13 +9,22 @@ class App extends StatelessWidget {
       child: MaterialApp(
         title: 'Registration App',
         theme: ThemeData.light(),
-        home: Scaffold(
-          appBar: AppBar(
-            title: Text('Registration App'),
-          ),
-          body: RegistrationScreen(),
-        ),
+        onGenerateRoute: routes,
       ),
     );
+  }
+
+  Route routes(RouteSettings settings) {
+    if (settings.name == '/') {
+      return MaterialPageRoute(builder: (BuildContext context) {
+        final bloc = Provider.of(context);
+        bloc.fetchItems();
+        return RegistrationScreen();
+      });
+    } else {
+      return MaterialPageRoute(builder: (BuildContext context) {
+        return RegistrationScreen();
+      });
+    }
   }
 }

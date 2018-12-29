@@ -7,79 +7,96 @@ class RegistrationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = Provider.of(context);
 
-    return Container(
-      margin: EdgeInsets.all(0.0),
-      child: ListView(
-        children: <Widget>[
-          ProfilePictureWidget(),
-          Container(
-            padding: EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                nameField(),
-                emailField(),
-                passwordField(),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: profileDisclaimer(),
-                ),
-                ageDropdown(),
-                Divider(
-                  color: Colors.grey[900],
-                  height: 3.0,
-                ),
-                genderDropdown(),
-                Divider(
-                  color: Colors.grey[900],
-                  height: 3.0,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: ageAndGenderDisclaimer(),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: submitButton(),
-                ),
-              ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Registration App'),
+      ),
+      body: Container(
+        margin: EdgeInsets.all(0.0),
+        child: ListView(
+          children: <Widget>[
+            ProfilePictureWidget(),
+            Container(
+              padding: EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  nameField(bloc),
+                  emailField(bloc),
+                  passwordField(bloc),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: profileDisclaimer(),
+                  ),
+                  ageDropdown(bloc),
+                  Divider(
+                    color: Colors.grey[900],
+                    height: 3.0,
+                  ),
+                  genderDropdown(),
+                  Divider(
+                    color: Colors.grey[900],
+                    height: 3.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: ageAndGenderDisclaimer(),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: submitButton(bloc),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget nameField() {
-    return TextField(
-      keyboardType: TextInputType.text,
-      decoration: InputDecoration(
-        hintText: 'Name',
-        labelText: 'Name',
-      ),
-      onChanged: (String value) => print(value),
+  Widget nameField(Bloc bloc) {
+    return StreamBuilder<String>(
+      stream: bloc.name,
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        return TextField(
+          keyboardType: TextInputType.text,
+          decoration: InputDecoration(
+              hintText: 'Name', labelText: 'Name', errorText: snapshot.error),
+          onChanged: bloc.changeName,
+        );
+      },
     );
   }
 
-  Widget emailField() {
-    return TextField(
-      keyboardType: TextInputType.emailAddress,
-      decoration: InputDecoration(
-        hintText: 'Email',
-        labelText: 'Email',
-      ),
-      onChanged: (String value) => print(value),
+  Widget emailField(Bloc bloc) {
+    return StreamBuilder<String>(
+      stream: bloc.email,
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        return TextField(
+          keyboardType: TextInputType.emailAddress,
+          decoration: InputDecoration(
+              hintText: 'Email', labelText: 'Email', errorText: snapshot.error),
+          onChanged: bloc.changeEmail,
+        );
+      },
     );
   }
 
-  Widget passwordField() {
-    return TextField(
-      keyboardType: TextInputType.text,
-      decoration: InputDecoration(
-        hintText: 'Password',
-        labelText: 'Password',
-      ),
-      onChanged: (String value) => print(value),
+  Widget passwordField(Bloc bloc) {
+    return StreamBuilder<String>(
+      stream: bloc.password,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return TextField(
+          keyboardType: TextInputType.text,
+          decoration: InputDecoration(
+              hintText: 'Password',
+              labelText: 'Password',
+              errorText: snapshot.error),
+          obscureText: true,
+          onChanged: bloc.changePassword,
+        );
+      },
     );
   }
 
@@ -88,26 +105,37 @@ class RegistrationScreen extends StatelessWidget {
         'Your name will be public and we\'ll send updates to the email address you provide');
   }
 
-  Widget ageDropdown() {
-    List<String> items = ['Age', '21', '22', '23'];
-    String currentItemSelected = 'Age';
-
-    return DropdownButtonHideUnderline(
-      child: DropdownButton<String>(
-        value: currentItemSelected,
-        items: items.map((String dropdownItems) {
-          return DropdownMenuItem<String>(
-            value: dropdownItems,
-            child: Text(dropdownItems),
+  // TODO: Update 'value' when snapshot in 'onChanged' is updated.
+  // TODO: Inform Stream of updated snapshot value
+  Widget ageDropdown(Bloc bloc) {
+    return StreamBuilder<List<String>>(
+      stream: bloc.age,
+      builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(),
           );
-        }).toList(),
-        hint: Text('Enter your age'),
-        onChanged: (value) {
-          // Update the state
-          currentItemSelected = value;
-          print(currentItemSelected);
-        },
-      ),
+        }
+        String currentItemSelected = snapshot.data[0];
+        return DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            value: currentItemSelected,
+            items: snapshot.data.map((snapshot) {
+              return DropdownMenuItem<String>(
+                value: snapshot,
+                child: Text(snapshot),
+              );
+            }).toList(),
+            hint: Text('Enter your age'),
+            onChanged: (snapshot) {
+              // Update the state
+              currentItemSelected = snapshot;
+              print('Currently selected: $currentItemSelected');
+              //bloc.fetchItems();
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -138,14 +166,19 @@ class RegistrationScreen extends StatelessWidget {
         'Age and gender help improve recommendations but are not shown publicly.');
   }
 
-  Widget submitButton() {
-    return RaisedButton(
-      child: Text(
-        'Save',
-        style: TextStyle(color: Colors.white, fontSize: 20.0),
-      ),
-      color: Colors.blue,
-      onPressed: () => print('Save button pressed'),
+  Widget submitButton(Bloc bloc) {
+    return StreamBuilder<bool>(
+      stream: bloc.submitValid,
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        return RaisedButton(
+          child: Text(
+            'Save',
+            style: TextStyle(color: Colors.white, fontSize: 20.0),
+          ),
+          color: Colors.blue,
+          onPressed: snapshot.hasData ? bloc.registerUser : null,
+        );
+      },
     );
   }
 }
