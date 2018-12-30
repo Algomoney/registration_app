@@ -106,8 +106,9 @@ class RegistrationScreen extends StatelessWidget {
   }
 
   // TODO: Update 'value' when snapshot in 'onChanged' is updated.
-  // TODO: Inform Stream of updated snapshot value
   Widget ageDropdown(Bloc bloc) {
+    String currentItemSelected = 'Age';
+
     return StreamBuilder<List<String>>(
       stream: bloc.age,
       builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
@@ -116,22 +117,23 @@ class RegistrationScreen extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         }
-        String currentItemSelected = snapshot.data[0];
+
         return DropdownButtonHideUnderline(
           child: DropdownButton<String>(
             value: currentItemSelected,
-            items: snapshot.data.map((snapshot) {
+            items: snapshot.data.map((itemSnapshot) {
               return DropdownMenuItem<String>(
-                value: snapshot,
-                child: Text(snapshot),
+                value: itemSnapshot,
+                child: Text(itemSnapshot),
               );
             }).toList(),
             hint: Text('Enter your age'),
-            onChanged: (snapshot) {
+            onChanged: (value) {
               // Update the state
-              currentItemSelected = snapshot;
-              print('Currently selected: $currentItemSelected');
-              //bloc.fetchItems();
+              bloc.items.indexOf(value, 0);
+              bloc.fetchItems();
+              print(value);
+              bloc.changeAge(value);
             },
           ),
         );
