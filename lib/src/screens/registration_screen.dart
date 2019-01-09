@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 import '../blocs/provider.dart';
 import '../widgets/profile_picture_widget.dart';
 
@@ -105,9 +106,8 @@ class RegistrationScreen extends StatelessWidget {
         'Your name will be public and we\'ll send updates to the email address you provide');
   }
 
-  // TODO: Update 'value' when snapshot in 'onChanged' is updated.
   Widget ageDropdown(Bloc bloc) {
-    String currentItemSelected = 'Age';
+    String currentItemSelected = bloc.items.first;
 
     return StreamBuilder<List<String>>(
       stream: bloc.age,
@@ -120,7 +120,7 @@ class RegistrationScreen extends StatelessWidget {
 
         return DropdownButtonHideUnderline(
           child: DropdownButton<String>(
-            value: currentItemSelected,
+            value: currentItemSelected != 'Age' ? currentItemSelected : 'Age',
             items: snapshot.data.map((itemSnapshot) {
               return DropdownMenuItem<String>(
                 value: itemSnapshot,
@@ -130,9 +130,8 @@ class RegistrationScreen extends StatelessWidget {
             hint: Text('Enter your age'),
             onChanged: (value) {
               // Update the state
-              bloc.items.indexOf(value, 0);
+              bloc.selectedAge.listen((v) => currentItemSelected = v);
               bloc.fetchItems();
-              print(value);
               bloc.changeAge(value);
             },
           ),

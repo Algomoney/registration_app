@@ -17,6 +17,7 @@ class Bloc extends Object with Validators {
   Stream<String> get email => _email.transform(validateEmail);
   Stream<String> get password => _password.transform(validatePassword);
   Observable<List<String>> get age => _age.stream;
+  // TODO: Add transformer to ensure selectedAge is a valid number
   Observable<String> get selectedAge => _selectedAge.stream;
 
   Stream<bool> get submitValid => Observable.combineLatest4(
