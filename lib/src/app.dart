@@ -18,7 +18,8 @@ class App extends StatelessWidget {
     if (settings.name == '/') {
       return MaterialPageRoute(builder: (BuildContext context) {
         final bloc = Provider.of(context);
-        bloc.fetchItems();
+        bloc.fetchAges();
+        bloc.fetchGenders();
         return RegistrationScreen();
       });
     } else {

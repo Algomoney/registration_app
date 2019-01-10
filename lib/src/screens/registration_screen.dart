@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rxdart/rxdart.dart';
 import '../blocs/provider.dart';
 import '../widgets/profile_picture_widget.dart';
 
@@ -34,7 +33,7 @@ class RegistrationScreen extends StatelessWidget {
                     color: Colors.grey[900],
                     height: 3.0,
                   ),
-                  genderDropdown(),
+                  genderDropdown(bloc),
                   Divider(
                     color: Colors.grey[900],
                     height: 3.0,
@@ -107,7 +106,7 @@ class RegistrationScreen extends StatelessWidget {
   }
 
   Widget ageDropdown(Bloc bloc) {
-    String currentItemSelected = bloc.items.first;
+    String currentItemSelected = bloc.agesList.first;
 
     return StreamBuilder<List<String>>(
       stream: bloc.age,
@@ -121,17 +120,17 @@ class RegistrationScreen extends StatelessWidget {
         return DropdownButtonHideUnderline(
           child: DropdownButton<String>(
             value: currentItemSelected != 'Age' ? currentItemSelected : 'Age',
-            items: snapshot.data.map((itemSnapshot) {
+            items: snapshot.data.map((ageSnapshot) {
               return DropdownMenuItem<String>(
-                value: itemSnapshot,
-                child: Text(itemSnapshot),
+                value: ageSnapshot,
+                child: Text(ageSnapshot),
               );
             }).toList(),
             hint: Text('Enter your age'),
-            onChanged: (value) {
+            onChanged: (String value) {
               // Update the state
-              bloc.selectedAge.listen((v) => currentItemSelected = v);
-              bloc.fetchItems();
+              bloc.selectedAge.listen((data) => currentItemSelected = data);
+              bloc.fetchAges();
               bloc.changeAge(value);
             },
           ),
@@ -140,25 +139,37 @@ class RegistrationScreen extends StatelessWidget {
     );
   }
 
-  Widget genderDropdown() {
-    List<String> genders = ['Male', 'Female', 'None'];
+  Widget genderDropdown(Bloc bloc) {
     String currentItemSelected = 'None';
 
-    return DropdownButtonHideUnderline(
-      child: DropdownButton<String>(
-        value: currentItemSelected,
-        items: genders.map((String dropdownItems) {
-          return DropdownMenuItem<String>(
-            value: dropdownItems,
-            child: Text(dropdownItems),
+    return StreamBuilder<List<String>>(
+      stream: bloc.gender,
+      builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(),
           );
-        }).toList(),
-        hint: Text('Enter a gender'),
-        onChanged: (String value) {
-          currentItemSelected = value;
-          print(currentItemSelected);
-        },
-      ),
+        }
+
+        return DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            value: currentItemSelected != 'None' ? currentItemSelected : 'None',
+            items: snapshot.data.map((String dropdownSnapshot) {
+              return DropdownMenuItem<String>(
+                value: dropdownSnapshot,
+                child: Text(dropdownSnapshot),
+              );
+            }).toList(),
+            hint: Text('Enter a gender'),
+            onChanged: (String value) {
+              // Update the state
+              bloc.selectedGender.listen((data) => currentItemSelected = data);
+              bloc.fetchGenders();
+              bloc.changeGender(value);
+            },
+          ),
+        );
+      },
     );
   }
 
