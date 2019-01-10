@@ -41,7 +41,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>We need your permission to upload your pictures to our servers</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need your permission to upload your pictures to our servers</string>
 </dict>
 </plist>
