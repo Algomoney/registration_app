@@ -107,6 +107,8 @@ class _ProfilePictureWidget extends State<ProfilePictureWidget> {
         });
   }
 
+  // TODO: Implement taking profile pic with camera
+  // TODO: Use listener & Stream Builder to set state
   chooseCameraPhoto(Bloc bloc) async {
 //    return StreamBuilder<Future<File>>(
 //      stream: bloc.photo,

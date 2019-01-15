@@ -49,7 +49,7 @@ class Bloc extends Object with Validators {
     _gender.add(genderList);
   }
 
-  // Send data to API endpoint
+  // TODO: Send data to API endpoint and return status code
   int registerUser() {
     final validPhoto = _photo.value;
     final validName = _name.value;
