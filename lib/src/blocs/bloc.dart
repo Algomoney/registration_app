@@ -5,7 +5,6 @@ import 'validators.dart';
 
 class Bloc extends Object with Validators {
   final _photo = BehaviorSubject<File>();
-  final _updatedPhoto = BehaviorSubject<File>();
   final _name = BehaviorSubject<String>();
   final _email = BehaviorSubject<String>();
   final _password = BehaviorSubject<String>();
@@ -19,7 +18,6 @@ class Bloc extends Object with Validators {
 
   // Add data to Stream
   Observable<File> get photo => _photo.stream;
-  Observable<File> get updatedPhoto => _updatedPhoto.stream;
   Stream<String> get name => _name.transform(validateName);
   Stream<String> get email => _email.transform(validateEmail);
   Stream<String> get password => _password.transform(validatePassword);
@@ -34,7 +32,6 @@ class Bloc extends Object with Validators {
 
   // Change data
   Function(File) get changePhoto => _photo.add;
-  Function(File) get updatePhoto => _updatedPhoto.add;
   Function(String) get changeName => _name.add;
   Function(String) get changeEmail => _email.add;
   Function(String) get changePassword => _password.add;
@@ -70,7 +67,6 @@ class Bloc extends Object with Validators {
 
   void dispose() {
     _photo.close();
-    _updatedPhoto.close();
     _name.close();
     _email.close();
     _password.close();

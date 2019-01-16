@@ -10,10 +10,12 @@ class ProfilePictureWidget extends StatefulWidget {
 
 class _ProfilePictureWidget extends State<ProfilePictureWidget> {
   File _image;
-  File file;
+  File _imageFile;
+
   @override
   Widget build(BuildContext context) {
     final bloc = Provider.of(context);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -52,7 +54,7 @@ class _ProfilePictureWidget extends State<ProfilePictureWidget> {
                     shape: BoxShape.circle,
                     image: DecorationImage(
                       fit: BoxFit.fill,
-                      image: FileImage(file),
+                      image: FileImage(_imageFile),
                     ),
                   ),
                 ),
@@ -80,8 +82,13 @@ class _ProfilePictureWidget extends State<ProfilePictureWidget> {
                   children: <Widget>[
                     RaisedButton(
                       child: Text('Take a picture'),
-                      onPressed: () {
-                        chooseCameraPhoto(bloc);
+                      onPressed: () async {
+                        _image = await ImagePicker.pickImage(
+                            source: ImageSource.camera);
+                        bloc.changePhoto(_image);
+                        setState(() {
+                          _imageFile = _image;
+                        });
                         Navigator.of(context).pop();
                       },
                     ),
@@ -90,12 +97,11 @@ class _ProfilePictureWidget extends State<ProfilePictureWidget> {
                       onPressed: () async {
                         _image = await ImagePicker.pickImage(
                             source: ImageSource.gallery);
-                        setState(() {
-                          file = _image;
-                        });
-                        bloc.changePhoto(_image);
 
-                        choosePhotoGalleryPhoto(bloc);
+                        bloc.changePhoto(_image);
+                        setState(() {
+                          _imageFile = _image;
+                        });
                         Navigator.of(context).pop();
                       },
                     ),
@@ -105,59 +111,5 @@ class _ProfilePictureWidget extends State<ProfilePictureWidget> {
             ],
           );
         });
-  }
-
-  // TODO: Implement taking profile pic with camera
-  // TODO: Use listener & Stream Builder to set state
-  chooseCameraPhoto(Bloc bloc) async {
-//    return StreamBuilder<Future<File>>(
-//      stream: bloc.photo,
-//      builder: (BuildContext context, AsyncSnapshot<Future<File>> snapshot) {
-//        print('image: ${snapshot.data}');
-//        var image = ImagePicker.pickImage(source: ImageSource.camera);
-//        return FutureBuilder<File>(
-//          future: image,
-//          builder: (BuildContext context, AsyncSnapshot<File> photoSnapshot) {
-//            bloc.changePhoto(image);
-//          },
-//        );
-//      },
-//    );
-  }
-
-  Widget choosePhotoGalleryPhoto(Bloc bloc) {
-    //bloc.updatedPhoto.listen((data) => _image = data);
-    return StreamBuilder<File>(
-      stream: bloc.photo,
-      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-        if (!snapshot.hasData) {
-          print('Loading');
-          return Text('Loading...');
-        }
-
-        bloc.changePhoto(_image);
-        print(bloc.photo.first);
-        //bloc.updatePhoto(file);
-        //bloc.updatedPhoto.listen((d) => _image = d);
-        //var i = snapshot.data.path;
-        //print(i);
-
-//        return FutureBuilder<File>(
-//          future: i,
-//          builder: (BuildContext context, AsyncSnapshot<File> photoSnapshot) {
-//            if (!photoSnapshot.hasData) {
-//              print('No image');
-//            }
-//            bloc.updatedPhoto.listen((f) => file = f);
-//            return Image.file(photoSnapshot.data);
-//          },
-//        );
-
-//        bloc.updatedPhoto.listen((f) => _image = f);
-//        print(snapshot.data.path);
-//        //_image = snapshot.data;
-//        return Image.file(snapshot.data);
-      },
-    );
   }
 }
