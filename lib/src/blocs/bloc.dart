@@ -50,7 +50,7 @@ class Bloc extends Object with Validators {
     _gender.add(genderList);
   }
 
-  registerUser() {
+  Future<String> registerUser() async {
     final register = RegistrationModel(
         photo: _photo.value.path,
         name: _name.value,
@@ -58,8 +58,10 @@ class Bloc extends Object with Validators {
         password: _password.value,
         age: _selectedAge.value,
         gender: _selectedGender.value);
-    final result = api.postRegistrationRecord(register);
-    result.then((data) => print('Response: $data'));
+
+    final result = await api.postRegistrationRecord(register);
+
+    return result;
   }
 
   void dispose() {
