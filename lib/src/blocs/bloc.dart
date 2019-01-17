@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'package:rxdart/rxdart.dart';
 import 'validators.dart';
+import '../services/register_api.dart';
+import '../models/registeration_model.dart';
 
 class Bloc extends Object with Validators {
   final _photo = BehaviorSubject<File>();
@@ -15,6 +17,8 @@ class Bloc extends Object with Validators {
 
   List<String> agesList = ['Age', '21', '22', '23', '24'];
   List<String> genderList = ['Male', 'Female', 'None'];
+
+  RegisterApi api = RegisterApi();
 
   // Add data to Stream
   Observable<File> get photo => _photo.stream;
@@ -46,23 +50,16 @@ class Bloc extends Object with Validators {
     _gender.add(genderList);
   }
 
-  // TODO: Send data to API endpoint and return status code
-  int registerUser() {
-    final validPhoto = _photo.value;
-    final validName = _name.value;
-    final validEmail = _email.value;
-    final validPassword = _password.value;
-    final selectedAge = _selectedAge.value;
-    final selectedGender = _selectedGender.value;
-
-    print('Photo is: $validPhoto');
-    print('Name is: $validName');
-    print('Email is: $validEmail');
-    print('Password is: $validPassword');
-    print('Selected Age is: $selectedAge');
-    print('Selected Gender is: $selectedGender');
-
-    return 1;
+  registerUser() {
+    final register = RegistrationModel(
+        photo: _photo.value.path,
+        name: _name.value,
+        email: _email.value,
+        password: _password.value,
+        age: _selectedAge.value,
+        gender: _selectedGender.value);
+    final result = api.postRegistrationRecord(register);
+    result.then((data) => print('Response: $data'));
   }
 
   void dispose() {
