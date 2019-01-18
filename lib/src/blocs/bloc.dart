@@ -10,6 +10,7 @@ class Bloc extends Object with Validators {
   final _name = BehaviorSubject<String>();
   final _email = BehaviorSubject<String>();
   final _password = BehaviorSubject<String>();
+  //TODO: Try to reduce the number of Streams
   final _age = BehaviorSubject<List<String>>();
   final _selectedAge = BehaviorSubject<String>();
   final _gender = BehaviorSubject<List<String>>();
@@ -27,7 +28,6 @@ class Bloc extends Object with Validators {
   Stream<String> get password => _password.transform(validatePassword);
   Observable<List<String>> get age => _age.stream;
   Observable<List<String>> get gender => _gender.stream;
-  // TODO: Add transformer to ensure selectedAge is a valid number
   Observable<String> get selectedAge => _selectedAge.stream;
   Observable<String> get selectedGender => _selectedGender.stream;
 

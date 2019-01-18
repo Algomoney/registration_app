@@ -188,9 +188,28 @@ class RegistrationScreen extends StatelessWidget {
             style: TextStyle(color: Colors.white, fontSize: 20.0),
           ),
           color: Colors.blue,
-          onPressed: snapshot.hasData ? bloc.registerUser : null,
+          //onPressed: snapshot.hasData ? bloc.registerUser : null,
+          onPressed: () async {
+            if (snapshot.hasData) {
+              final r = await bloc.registerUser();
+              Scaffold.of(context).showSnackBar(_snackBar(r));
+            } else {
+              return null;
+            }
+          },
         );
       },
+    );
+  }
+
+  Widget _snackBar(String message) {
+    return SnackBar(
+      content: Text('$message'),
+      duration: Duration(seconds: 3),
+      action: SnackBarAction(
+        label: 'Close',
+        onPressed: () => print('Snackbar pressed'),
+      ),
     );
   }
 }
