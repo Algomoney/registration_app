@@ -10,7 +10,6 @@ class Bloc extends Object with Validators {
   final _name = BehaviorSubject<String>();
   final _email = BehaviorSubject<String>();
   final _password = BehaviorSubject<String>();
-  //TODO: Try to reduce the number of Streams
   final _age = BehaviorSubject<List<String>>();
   final _selectedAge = BehaviorSubject<String>();
   final _gender = BehaviorSubject<List<String>>();

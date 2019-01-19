@@ -190,7 +190,7 @@ class RegistrationScreen extends StatelessWidget {
           color: Colors.blue,
           //onPressed: snapshot.hasData ? bloc.registerUser : null,
           onPressed: () async {
-            if (snapshot.hasData) {
+            if (!snapshot.hasData) {
               final r = await bloc.registerUser();
               Scaffold.of(context).showSnackBar(_snackBar(r));
             } else {
