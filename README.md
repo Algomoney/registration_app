@@ -1,5 +1,5 @@
 # Registration App
 
-A new Flutter application that demonstrates a registration form.
+A Flutter application that demonstrates how to manage state using RxDart.
 
 
